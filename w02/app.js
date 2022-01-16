@@ -1,41 +1,35 @@
-// const http = require('http'); // require: built in js global module
+const path = require('path');
+
 const express = require('express');
+const bodyParser = require('body-parser');
+// const expressHbs = require('express-handlebars');
 
 const app = express();
 
-/*
-// use(): add middleware function, accepts an array of req handlers
-// whenever there is an incoming req, function will be executed. 
-// Takes three argu: reqest, response, next
-// next: a function that will be passed to "(req, res, next) => {}" function
+// register the template engine (for hbs)
+// app.engine('hbs', expressHbs({layoutsDir: 'views/layouts/', defaultLayout: 'main-layout', extname: 'hbs'})); // expressHbs(): initialize the view engine
+
+// set(): allows us to set any values globally on our express application
+// app.set('view engine', 'pug'); // set the default templating engine
+app.set('view engine', 'ejs'); // set the default templating engine
+app.set('views', 'views'); // find views at /views
+
+const adminData = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
+// bodyParser.urlencoded(): calls next() when its done
+// execute body parsing, eg a form
+app.use(bodyParser.urlencoded({extended: false})); // extended: if it should be able to parse non-default features
+// whenever it tries to find a eg .css or .js files, it forwards it to the /public folder
+app.use(express.static(path.join(__dirname, 'public'))); // grant direct reading access with express.static() to certain path
+
+app.use('/admin', adminData.routes);
+app.use(shopRoutes);
+
 app.use((req, res, next) => {
-    console.log('In the middleware!');
-    // next(): Allow the request to continue to the next use()/middleware
-    // always call next() or send back response (send())
-    next();
-});
-*/
-
-// another use(), catching the previous next()
-app.use('/add-product', (req, res, next) => { // '/': any request that starts with a slash
-    console.log('In another the middleware!');
-    // send(): expressjs utility, send a response
-    res.send('<h1>The add product</h1>'); // send(): exiting function since no next() is called
+    // res.status(404).send('<h1>Page not found</h1>');
+    // res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+    res.status(404).render('404', {pageTitle: 'Page not Found'});
 });
 
-// another use(), catching the previous next()
-app.use('/', (req, res, next) => { // '/': any request that starts with a slash
-    console.log('In another the middleware!');
-    // send(): expressjs utility, send a response
-    res.send('<h1>Hello from Express!</h1>'); // Since text is sent, header Content-Type will be set to text/html automatically by expressjs
-});
-
-// Incoming request: An event loop that keeps running until we stop it with process.ext
-// const server = http.createServer(app); // app: a valid request handler
-
-// listen for incoming request
-// 3000: port to listen on (localhost:3000)
-// server.listen(3000);
-
-// Sets up server instance, listen to port
 app.listen(3000);
