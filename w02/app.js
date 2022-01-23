@@ -1,8 +1,6 @@
 const path = require('path');
-
 const express = require('express');
 const bodyParser = require('body-parser');
-// const expressHbs = require('express-handlebars');
 
 const app = express();
 
@@ -10,7 +8,6 @@ const app = express();
 // app.engine('hbs', expressHbs({layoutsDir: 'views/layouts/', defaultLayout: 'main-layout', extname: 'hbs'})); // expressHbs(): initialize the view engine
 
 // set(): allows us to set any values globally on our express application
-// app.set('view engine', 'pug'); // set the default templating engine
 app.set('view engine', 'ejs'); // set the default templating engine
 app.set('views', 'views'); // find views at /views
 
